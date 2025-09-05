@@ -20,7 +20,7 @@ const DealDetailModal = ({ deal, isOpen, onClose }) => {
       if (deal?.contactId && isOpen) {
         setLoadingContact(true);
         try {
-          const contactData = await contactService.getById(deal.contactId);
+const contactData = await contactService.getById(deal.contactId);
           setContact(contactData);
         } catch (error) {
           console.error('Failed to load contact:', error);

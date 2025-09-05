@@ -90,7 +90,7 @@ const AddDealModal = ({ isOpen, onClose, onSave }) => {
     
     try {
       // Find selected contact details
-      const selectedContact = contacts.find(c => c.Id === parseInt(formData.contactId));
+const selectedContact = contacts.find(c => c.Id === parseInt(formData.contactId));
       
       const dealData = {
         title: formData.title.trim(),
@@ -185,7 +185,7 @@ const AddDealModal = ({ isOpen, onClose, onSave }) => {
                 {contactsLoading ? "Loading contacts..." : "Select a contact"}
               </option>
               {contacts.map(contact => (
-                <option key={contact.Id} value={contact.Id}>
+<option key={contact.Id} value={contact.Id}>
                   {contact.name} {contact.company && `- ${contact.company}`}
                 </option>
               ))}

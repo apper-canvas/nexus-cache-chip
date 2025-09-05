@@ -1,17 +1,17 @@
 import contactsData from "@/services/mockData/contacts.json";
 
 class ContactService {
-  constructor() {
+constructor() {
     this.contacts = [...contactsData];
   }
 
   async getAll() {
-    // Simulate network delay
+// Simulate network delay
     await new Promise(resolve => setTimeout(resolve, 300));
     return [...this.contacts].sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
   }
 
-  async getById(id) {
+async getById(id) {
     // Simulate network delay
     await new Promise(resolve => setTimeout(resolve, 200));
     const contact = this.contacts.find(contact => contact.Id === parseInt(id));
@@ -52,7 +52,7 @@ async create(contactData) {
     return { ...newContact };
   }
 
-  async update(id, contactData) {
+async update(id, contactData) {
     // Simulate network delay
     await new Promise(resolve => setTimeout(resolve, 350));
     
@@ -69,8 +69,7 @@ async create(contactData) {
 
     return { ...this.contacts[index] };
   }
-
-  async delete(id) {
+async delete(id) {
     // Simulate network delay
     await new Promise(resolve => setTimeout(resolve, 250));
     
@@ -83,5 +82,4 @@ async create(contactData) {
     return true;
   }
 }
-
 export const contactService = new ContactService();

@@ -79,7 +79,7 @@ const DealKanbanBoard = ({ deals = [], onStatusChange }) => {
         'Closed': 'closed'
       };
 
-      onStatusChange(draggedDeal.Id, statusMap[stageKey], stageKey);
+onStatusChange(draggedDeal.Id, statusMap[stageKey], stageKey);
     }
   };
 
@@ -155,7 +155,7 @@ const DealKanbanBoard = ({ deals = [], onStatusChange }) => {
               <div className="space-y-3">
                 {stageData[stage.key].deals.map(deal => (
                   <DealCard
-                    key={deal.Id}
+key={deal.Id}
                     deal={deal}
                     onDragStart={handleDragStart}
                     onDragEnd={handleDragEnd}

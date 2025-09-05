@@ -44,7 +44,7 @@ const handleDealClick = (deal) => {
     setSelectedDeal(null);
   };
 
-  const handleViewDealPage = (dealId) => {
+const handleViewDealPage = (dealId) => {
     navigate(`/deals/${dealId}`);
   };
 const handleAddDeal = async (dealData) => {
@@ -61,7 +61,7 @@ const handleAddDeal = async (dealData) => {
     try {
       const updatedDeal = await dealsService.updateStatus(dealId, newStatus, newStage);
       setDeals(prev => prev.map(deal => 
-        deal.Id === dealId ? updatedDeal : deal
+deal.Id === dealId ? updatedDeal : deal
       ));
       toast.success(`Deal moved to ${newStage}`);
     } catch (err) {
