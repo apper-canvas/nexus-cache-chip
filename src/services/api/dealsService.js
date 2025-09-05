@@ -1,4 +1,6 @@
-import { toast } from 'react-toastify';
+import { toast } from "react-toastify";
+import React from "react";
+import Error from "@/components/ui/Error";
 
 class DealsService {
   constructor() {
@@ -139,32 +141,32 @@ class DealsService {
 
   async create(dealData) {
     try {
+      // Only include updateable fields based on schema visibility
       const params = {
         records: [{
-          Name: dealData.title?.trim(),
-          title_c: dealData.title?.trim(),
-          value_c: dealData.value || 0,
-          probability_c: dealData.probability || 50,
-          expected_close_date_c: dealData.expectedCloseDate,
-          stage_c: dealData.stage || 'Lead',
-          status_c: dealData.status || 'active',
-          priority_c: dealData.priority || 'Medium',
-          source_c: dealData.source || 'Direct',
-          description_c: dealData.description?.trim() || '',
-          notes_c: dealData.notes?.trim() || '',
-          assigned_to_c: dealData.assignedTo || 'Current User',
+          Name: dealData.title, // Name field is updateable
+          title_c: dealData.title,
           contact_id_c: dealData.contactId ? parseInt(dealData.contactId) : null,
-          contact_name_c: dealData.contactName || null,
-          company_c: dealData.company || 'No Company'
+          contact_name_c: dealData.contactName,
+          company_c: dealData.company,
+          value_c: parseFloat(dealData.value),
+          probability_c: parseInt(dealData.probability),
+          expected_close_date_c: dealData.expectedCloseDate,
+          status_c: dealData.status || 'active',
+          stage_c: dealData.stage || 'Lead',
+          description_c: dealData.description,
+          notes_c: dealData.notes,
+          assigned_to_c: dealData.assignedTo,
+          source_c: dealData.source
         }]
       };
 
       const response = await this.apperClient.createRecord(this.tableName, params);
-
+      
       if (!response.success) {
         console.error(response.message);
         toast.error(response.message);
-        return null;
+        throw new Error(response.message);
       }
 
       if (response.results) {
@@ -174,74 +176,72 @@ class DealsService {
         if (failed.length > 0) {
           console.error(`Failed to create ${failed.length} deals:`, failed);
           failed.forEach(record => {
+            record.errors?.forEach(error => toast.error(`${error.fieldLabel}: ${error}`));
             if (record.message) toast.error(record.message);
           });
+          throw new Error('Failed to create deal');
         }
-        
+
         if (successful.length > 0) {
-          toast.success('Deal created successfully');
-          const created = successful[0].data;
+          const newDeal = successful[0].data;
           return {
-            Id: created.Id,
-            title: created.title_c,
-            value: created.value_c || 0,
-            probability: created.probability_c || 50,
-            expectedCloseDate: created.expected_close_date_c,
-            stage: created.stage_c || 'Lead',
-            status: created.status_c || 'active',
-            priority: created.priority_c,
-            source: created.source_c,
-            description: created.description_c,
-            notes: created.notes_c,
-            assignedTo: created.assigned_to_c,
-            contactId: created.contact_id_c?.Id || created.contact_id_c,
-            contactName: created.contact_name_c || created.contact_id_c?.Name || 'Unknown Contact',
-            company: created.company_c || 'No Company',
-            createdAt: created.CreatedOn,
-            updatedAt: created.ModifiedOn
+            Id: newDeal.Id,
+            title: newDeal.title_c,
+            value: newDeal.value_c || 0,
+            probability: newDeal.probability_c || 50,
+            expectedCloseDate: newDeal.expected_close_date_c,
+            stage: newDeal.stage_c || 'Lead',
+            status: newDeal.status_c || 'active',
+            priority: newDeal.priority_c,
+            source: newDeal.source_c,
+            description: newDeal.description_c,
+            notes: newDeal.notes_c,
+            assignedTo: newDeal.assigned_to_c,
+            contactId: newDeal.contact_id_c?.Id || newDeal.contact_id_c,
+            contactName: newDeal.contact_name_c || newDeal.contact_id_c?.Name || 'Unknown Contact',
+            company: newDeal.company_c || 'No Company',
+            createdAt: newDeal.CreatedOn,
+            updatedAt: newDeal.ModifiedOn
           };
         }
       }
-      return null;
+      
+      throw new Error('No successful records created');
     } catch (error) {
       console.error('Error creating deal:', error);
-      toast.error('Failed to create deal');
-      return null;
+      throw error;
     }
   }
 
   async update(id, dealData) {
     try {
-      const updateData = {
-        Id: parseInt(id)
-      };
-
-      // Only include fields that are being updated
-      if (dealData.title !== undefined) updateData.title_c = dealData.title?.trim();
-      if (dealData.value !== undefined) updateData.value_c = dealData.value;
-      if (dealData.probability !== undefined) updateData.probability_c = dealData.probability;
-      if (dealData.expectedCloseDate !== undefined) updateData.expected_close_date_c = dealData.expectedCloseDate;
-      if (dealData.stage !== undefined) updateData.stage_c = dealData.stage;
-      if (dealData.status !== undefined) updateData.status_c = dealData.status;
-      if (dealData.priority !== undefined) updateData.priority_c = dealData.priority;
-      if (dealData.source !== undefined) updateData.source_c = dealData.source;
-      if (dealData.description !== undefined) updateData.description_c = dealData.description?.trim();
-      if (dealData.notes !== undefined) updateData.notes_c = dealData.notes?.trim();
-      if (dealData.assignedTo !== undefined) updateData.assigned_to_c = dealData.assignedTo;
-      if (dealData.contactId !== undefined) updateData.contact_id_c = dealData.contactId ? parseInt(dealData.contactId) : null;
-      if (dealData.contactName !== undefined) updateData.contact_name_c = dealData.contactName;
-      if (dealData.company !== undefined) updateData.company_c = dealData.company;
-
+      // Only include updateable fields based on schema visibility
       const params = {
-        records: [updateData]
+        records: [{
+          Id: parseInt(id),
+          Name: dealData.title,
+          title_c: dealData.title,
+          contact_id_c: dealData.contactId ? parseInt(dealData.contactId) : null,
+          contact_name_c: dealData.contactName,
+          company_c: dealData.company,
+          value_c: parseFloat(dealData.value),
+          probability_c: parseInt(dealData.probability),
+          expected_close_date_c: dealData.expectedCloseDate,
+          status_c: dealData.status,
+          stage_c: dealData.stage,
+          description_c: dealData.description,
+          notes_c: dealData.notes,
+          assigned_to_c: dealData.assignedTo,
+          source_c: dealData.source
+        }]
       };
 
       const response = await this.apperClient.updateRecord(this.tableName, params);
-
+      
       if (!response.success) {
         console.error(response.message);
         toast.error(response.message);
-        return null;
+        throw new Error(response.message);
       }
 
       if (response.results) {
@@ -251,44 +251,46 @@ class DealsService {
         if (failed.length > 0) {
           console.error(`Failed to update ${failed.length} deals:`, failed);
           failed.forEach(record => {
+            record.errors?.forEach(error => toast.error(`${error.fieldLabel}: ${error}`));
             if (record.message) toast.error(record.message);
           });
+          throw new Error('Failed to update deal');
         }
-        
+
         if (successful.length > 0) {
-          toast.success('Deal updated successfully');
-          const updated = successful[0].data;
+          const updatedDeal = successful[0].data;
           return {
-            Id: updated.Id,
-            title: updated.title_c,
-            value: updated.value_c || 0,
-            probability: updated.probability_c || 50,
-            expectedCloseDate: updated.expected_close_date_c,
-            stage: updated.stage_c || 'Lead',
-            status: updated.status_c || 'active',
-            priority: updated.priority_c,
-            source: updated.source_c,
-            description: updated.description_c,
-            notes: updated.notes_c,
-            assignedTo: updated.assigned_to_c,
-            contactId: updated.contact_id_c?.Id || updated.contact_id_c,
-            contactName: updated.contact_name_c || updated.contact_id_c?.Name || 'Unknown Contact',
-            company: updated.company_c || 'No Company',
-            createdAt: updated.CreatedOn,
-            updatedAt: updated.ModifiedOn
+            Id: updatedDeal.Id,
+            title: updatedDeal.title_c,
+            value: updatedDeal.value_c || 0,
+            probability: updatedDeal.probability_c || 50,
+            expectedCloseDate: updatedDeal.expected_close_date_c,
+            stage: updatedDeal.stage_c || 'Lead',
+            status: updatedDeal.status_c || 'active',
+            priority: updatedDeal.priority_c,
+            source: updatedDeal.source_c,
+            description: updatedDeal.description_c,
+            notes: updatedDeal.notes_c,
+            assignedTo: updatedDeal.assigned_to_c,
+            contactId: updatedDeal.contact_id_c?.Id || updatedDeal.contact_id_c,
+            contactName: updatedDeal.contact_name_c || updatedDeal.contact_id_c?.Name || 'Unknown Contact',
+            company: updatedDeal.company_c || 'No Company',
+            createdAt: updatedDeal.CreatedOn,
+            updatedAt: updatedDeal.ModifiedOn
           };
         }
       }
-      return null;
+      
+      throw new Error('No successful records updated');
     } catch (error) {
-      console.error('Error updating deal:', error);
-      toast.error('Failed to update deal');
-      return null;
+      console.error(`Error updating deal ${id}:`, error);
+      throw error;
     }
   }
 
   async updateStatus(id, status, stage) {
     try {
+      // Only update status and stage fields
       const params = {
         records: [{
           Id: parseInt(id),
@@ -298,11 +300,11 @@ class DealsService {
       };
 
       const response = await this.apperClient.updateRecord(this.tableName, params);
-
+      
       if (!response.success) {
         console.error(response.message);
         toast.error(response.message);
-        return null;
+        throw new Error(response.message);
       }
 
       if (response.results) {
@@ -310,58 +312,59 @@ class DealsService {
         const failed = response.results.filter(r => !r.success);
         
         if (failed.length > 0) {
-          console.error(`Failed to update ${failed.length} deal statuses:`, failed);
+          console.error(`Failed to update status for ${failed.length} deals:`, failed);
           failed.forEach(record => {
+            record.errors?.forEach(error => toast.error(`${error.fieldLabel}: ${error}`));
             if (record.message) toast.error(record.message);
           });
+          throw new Error('Failed to update deal status');
         }
-        
+
         if (successful.length > 0) {
-          toast.success('Deal status updated successfully');
-          const updated = successful[0].data;
+          const updatedDeal = successful[0].data;
           return {
-            Id: updated.Id,
-            title: updated.title_c,
-            value: updated.value_c || 0,
-            probability: updated.probability_c || 50,
-            expectedCloseDate: updated.expected_close_date_c,
-            stage: updated.stage_c || 'Lead',
-            status: updated.status_c || 'active',
-            priority: updated.priority_c,
-            source: updated.source_c,
-            description: updated.description_c,
-            notes: updated.notes_c,
-            assignedTo: updated.assigned_to_c,
-            contactId: updated.contact_id_c?.Id || updated.contact_id_c,
-            contactName: updated.contact_name_c || updated.contact_id_c?.Name || 'Unknown Contact',
-            company: updated.company_c || 'No Company',
-            createdAt: updated.CreatedOn,
-            updatedAt: updated.ModifiedOn
+            Id: updatedDeal.Id,
+            title: updatedDeal.title_c,
+            value: updatedDeal.value_c || 0,
+            probability: updatedDeal.probability_c || 50,
+            expectedCloseDate: updatedDeal.expected_close_date_c,
+            stage: updatedDeal.stage_c || 'Lead',
+            status: updatedDeal.status_c || 'active',
+            priority: updatedDeal.priority_c,
+            source: updatedDeal.source_c,
+            description: updatedDeal.description_c,
+            notes: updatedDeal.notes_c,
+            assignedTo: updatedDeal.assigned_to_c,
+            contactId: updatedDeal.contact_id_c?.Id || updatedDeal.contact_id_c,
+            contactName: updatedDeal.contact_name_c || updatedDeal.contact_id_c?.Name || 'Unknown Contact',
+            company: updatedDeal.company_c || 'No Company',
+            createdAt: updatedDeal.CreatedOn,
+            updatedAt: updatedDeal.ModifiedOn
           };
         }
       }
-      return null;
+      
+      throw new Error('No successful records updated');
     } catch (error) {
-      console.error('Error updating deal status:', error);
-      toast.error('Failed to update deal status');
-      return null;
+      console.error(`Error updating deal status ${id}:`, error);
+      throw error;
     }
   }
 
   async delete(id) {
     try {
-      const params = {
+      const params = { 
         RecordIds: [parseInt(id)]
       };
-
+      
       const response = await this.apperClient.deleteRecord(this.tableName, params);
-
+      
       if (!response.success) {
         console.error(response.message);
         toast.error(response.message);
         return false;
       }
-
+      
       if (response.results) {
         const successful = response.results.filter(r => r.success);
         const failed = response.results.filter(r => !r.success);
@@ -371,17 +374,15 @@ class DealsService {
           failed.forEach(record => {
             if (record.message) toast.error(record.message);
           });
+          return false;
         }
         
-        if (successful.length > 0) {
-          toast.success('Deal deleted successfully');
-          return true;
-        }
+        return successful.length > 0;
       }
+      
       return false;
     } catch (error) {
-      console.error('Error deleting deal:', error);
-      toast.error('Failed to delete deal');
+      console.error(`Error deleting deal ${id}:`, error);
       return false;
     }
   }
@@ -398,11 +399,6 @@ class DealsService {
           {"field": {"Name": "expected_close_date_c"}},
           {"field": {"Name": "stage_c"}},
           {"field": {"Name": "status_c"}},
-          {"field": {"Name": "priority_c"}},
-          {"field": {"Name": "source_c"}},
-          {"field": {"Name": "description_c"}},
-          {"field": {"Name": "notes_c"}},
-          {"field": {"Name": "assigned_to_c"}},
           {"field": {"Name": "contact_id_c"}},
           {"field": {"Name": "contact_name_c"}},
           {"field": {"Name": "company_c"}},
@@ -417,6 +413,7 @@ class DealsService {
       
       if (!response.success) {
         console.error(response.message);
+        toast.error(response.message);
         return [];
       }
 
@@ -428,11 +425,6 @@ class DealsService {
         expectedCloseDate: deal.expected_close_date_c,
         stage: deal.stage_c || 'Lead',
         status: deal.status_c || 'active',
-        priority: deal.priority_c,
-        source: deal.source_c,
-        description: deal.description_c,
-        notes: deal.notes_c,
-        assignedTo: deal.assigned_to_c,
         contactId: deal.contact_id_c?.Id || deal.contact_id_c,
         contactName: deal.contact_name_c || deal.contact_id_c?.Name || 'Unknown Contact',
         company: deal.company_c || 'No Company',
@@ -441,6 +433,7 @@ class DealsService {
       }));
     } catch (error) {
       console.error('Error fetching deals by stage:', error);
+      toast.error('Failed to load deals by stage');
       return [];
     }
   }
@@ -452,48 +445,32 @@ class DealsService {
           {"field": {"Name": "Id"}},
           {"field": {"Name": "stage_c"}},
           {"field": {"Name": "value_c"}}
-        ]
+        ],
+        groupBy: ["stage_c"]
       };
 
       const response = await this.apperClient.fetchRecords(this.tableName, params);
       
       if (!response.success) {
         console.error(response.message);
-        return {
-          Lead: { count: 0, value: 0 },
-          Qualified: { count: 0, value: 0 },
-          Proposal: { count: 0, value: 0 },
-          Negotiation: { count: 0, value: 0 },
-          Closed: { count: 0, value: 0 }
-        };
+        return {};
       }
 
-      const stats = {
-        Lead: { count: 0, value: 0 },
-        Qualified: { count: 0, value: 0 },
-        Proposal: { count: 0, value: 0 },
-        Negotiation: { count: 0, value: 0 },
-        Closed: { count: 0, value: 0 }
-      };
-
+      // Process the grouped data to create pipeline statistics
+      const stats = {};
       (response.data || []).forEach(deal => {
         const stage = deal.stage_c || 'Lead';
-        if (stats[stage]) {
-          stats[stage].count++;
-          stats[stage].value += deal.value_c || 0;
+        if (!stats[stage]) {
+          stats[stage] = { count: 0, total: 0 };
         }
+        stats[stage].count += 1;
+        stats[stage].total += deal.value_c || 0;
       });
 
       return stats;
     } catch (error) {
       console.error('Error fetching pipeline stats:', error);
-      return {
-        Lead: { count: 0, value: 0 },
-        Qualified: { count: 0, value: 0 },
-        Proposal: { count: 0, value: 0 },
-        Negotiation: { count: 0, value: 0 },
-        Closed: { count: 0, value: 0 }
-      };
+      return {};
     }
   }
 }

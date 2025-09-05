@@ -159,7 +159,7 @@ key={deal.Id}
                     deal={deal}
                     onDragStart={handleDragStart}
                     onDragEnd={handleDragEnd}
-                    isDragging={draggedDeal?.Id === deal.Id}
+isDragging={draggedDeal?.Id === deal.Id}
                   />
                 ))}
               </div>
