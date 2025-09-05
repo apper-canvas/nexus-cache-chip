@@ -1,0 +1,98 @@
+[
+  {
+    "Id": 1,
+    "name": "Sarah Johnson",
+    "email": "sarah.johnson@techcorp.com",
+    "phone": "(555) 123-4567",
+    "company": "TechCorp Solutions",
+    "lastContactDate": "2024-11-15"
+  },
+  {
+    "Id": 2,
+    "name": "Robert Davis",
+    "email": "robert.davis@globalmanufacturing.com",
+    "phone": "(555) 234-5678",
+    "company": "Global Manufacturing Inc",
+    "lastContactDate": "2024-11-10"
+  },
+  {
+    "Id": 3,
+    "name": "Jennifer Martinez",
+    "email": "j.martinez@retailinnovations.com",
+    "phone": "(555) 345-6789",
+    "company": "Retail Innovations LLC",
+    "lastContactDate": "2024-11-08"
+  },
+  {
+    "Id": 4,
+    "name": "Mark Wilson",
+    "email": "mark.wilson@financialservices.com",
+    "phone": "(555) 456-7890",
+    "company": "Financial Services Group",
+    "lastContactDate": "2024-11-12"
+  },
+  {
+    "Id": 5,
+    "name": "Amanda Brown",
+    "email": "amanda.brown@healthcaresolutions.com",
+    "phone": "(555) 567-8901",
+    "company": "Healthcare Solutions",
+    "lastContactDate": "2024-10-28"
+  },
+  {
+    "Id": 6,
+    "name": "James Garcia",
+    "email": "james.garcia@startupventures.com",
+    "phone": "(555) 678-9012",
+    "company": "Startup Ventures",
+    "lastContactDate": "2024-11-05"
+  },
+  {
+    "Id": 7,
+    "name": "Patricia Lee",
+    "email": "patricia.lee@ecommercedynamics.com",
+    "phone": "(555) 789-0123",
+    "company": "E-commerce Dynamics",
+    "lastContactDate": "2024-11-18"
+  },
+  {
+    "Id": 8,
+    "name": "Christopher Taylor",
+    "email": "c.taylor@educationfirst.org",
+    "phone": "(555) 890-1234",
+    "company": "Education First",
+    "lastContactDate": "2024-11-01"
+  },
+  {
+    "Id": 9,
+    "name": "Michelle Anderson",
+    "email": "michelle.anderson@professionalservices.com",
+    "phone": "(555) 901-2345",
+    "company": "Professional Services Co",
+    "lastContactDate": "2024-10-15"
+  },
+  {
+    "Id": 10,
+    "name": "Kevin White",
+    "email": "kevin.white@constructioncorp.com",
+    "phone": "(555) 012-3456",
+    "company": "Construction Corp",
+    "lastContactDate": "2024-11-14"
+  },
+  {
+    "Id": 11,
+    "name": "Rachel Thompson",
+    "email": "rachel.thompson@logisticssolutions.com",
+    "phone": "(555) 123-5678",
+    "company": "Logistics Solutions",
+    "lastContactDate": "2024-11-09"
+  },
+  {
+    "Id": 12,
+    "name": "Daniel Moore",
+    "email": "daniel.moore@legalassociates.com",
+    "phone": "(555) 234-6789",
+    "company": "Legal Associates",
+    "lastContactDate": "2024-11-03"
+  }
+]
