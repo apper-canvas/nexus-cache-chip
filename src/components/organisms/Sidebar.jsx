@@ -1,9 +1,12 @@
+import { useContext } from "react";
 import { NavLink, useLocation } from "react-router-dom";
 import ApperIcon from "@/components/ApperIcon";
 import { cn } from "@/utils/cn";
-
+import { AuthContext } from "../../App";
 const Sidebar = ({ isOpen, onToggle }) => {
   const location = useLocation();
+  
+const { logout } = useContext(AuthContext);
   
   const navigationItems = [
     { name: "Contacts", href: "/contacts", icon: "Users" },
@@ -12,6 +15,14 @@ const Sidebar = ({ isOpen, onToggle }) => {
     { name: "Activities", href: "/activities", icon: "Activity" },
     { name: "Analytics", href: "/analytics", icon: "BarChart3" }
   ];
+
+  const handleLogout = async () => {
+    try {
+      await logout();
+    } catch (error) {
+      console.error('Logout failed:', error);
+    }
+  };
 
   const isActive = (href) => {
     return location.pathname === href || (href === "/contacts" && location.pathname === "/");
@@ -36,7 +47,7 @@ const Sidebar = ({ isOpen, onToggle }) => {
 
           {/* Navigation */}
           <nav className="flex-1 px-2 pb-4 space-y-1">
-            {navigationItems.map((item) => (
+{navigationItems.map((item) => (
               <NavLink
                 key={item.name}
                 to={item.href}
@@ -54,6 +65,18 @@ const Sidebar = ({ isOpen, onToggle }) => {
                 {item.name}
               </NavLink>
             ))}
+            
+            {/* Logout Button */}
+            <button
+              onClick={handleLogout}
+              className="group flex items-center w-full px-2 py-2 text-sm font-medium rounded-md transition-colors duration-200 text-slate-600 hover:bg-red-50 hover:text-red-700 mt-4"
+            >
+              <ApperIcon 
+                name="LogOut" 
+                className="mr-3 h-5 w-5 flex-shrink-0" 
+              />
+              Logout
+            </button>
           </nav>
         </div>
       </div>
@@ -94,7 +117,7 @@ const Sidebar = ({ isOpen, onToggle }) => {
 
             {/* Mobile Navigation */}
             <nav className="px-2 space-y-1">
-              {navigationItems.map((item) => (
+{navigationItems.map((item) => (
                 <NavLink
                   key={item.name}
                   to={item.href}
@@ -113,6 +136,21 @@ const Sidebar = ({ isOpen, onToggle }) => {
                   {item.name}
                 </NavLink>
               ))}
+              
+              {/* Mobile Logout Button */}
+              <button
+                onClick={() => {
+                  handleLogout();
+                  onToggle();
+                }}
+                className="group flex items-center w-full px-2 py-2 text-base font-medium rounded-md transition-colors duration-200 text-slate-600 hover:bg-red-50 hover:text-red-700 mt-4"
+              >
+                <ApperIcon 
+                  name="LogOut" 
+                  className="mr-4 h-6 w-6 flex-shrink-0" 
+                />
+                Logout
+              </button>
             </nav>
           </div>
         </div>
